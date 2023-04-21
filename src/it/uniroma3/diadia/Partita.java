@@ -19,8 +19,20 @@ public class Partita {
 	private Stanza stanzaCorrente;
 	private Labirinto labirinto;
 	private Giocatore giocatore;
+	private IO command;
 
+	public IO getCommand() {
+		return command;
+	}
 	public Partita(){
+		this.command= new IOConsole();
+		this.labirinto= new Labirinto();
+		this.stanzaCorrente= this.labirinto.getStanzaIniziale();
+		this.finita = false;
+		this.setGiocatore(new Giocatore(CFU_INIZIALI));
+	}
+	public Partita(IO command){
+		this.command=command;
 		this.labirinto= new Labirinto();
 		this.stanzaCorrente= this.labirinto.getStanzaIniziale();
 		this.finita = false;
@@ -73,5 +85,11 @@ public class Partita {
 
 	public void setGiocatore(Giocatore giocatore) {
 		this.giocatore = giocatore;
+	}
+
+	public boolean giocatoreIsVivo() {
+		return (giocatore.getCfu()!=0);
+	}
+
 	}	
-}
+

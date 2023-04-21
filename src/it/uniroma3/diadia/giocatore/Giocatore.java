@@ -1,5 +1,7 @@
 package it.uniroma3.diadia.giocatore;
 
+import it.uniroma3.diadia.attrezzi.Attrezzo;
+
 public class Giocatore {
 	private int cfu;
 	private Borsa borsa;
@@ -20,5 +22,13 @@ public class Giocatore {
 
 	public Borsa getBorsa() {
 		return borsa;
+	}
+	
+	public String toString() {
+		StringBuilder risultato = new StringBuilder();
+		risultato.append("\nhai: "+this.getCfu()+"Cfu");
+		
+		
+		return risultato.toString();
 	}
 }
