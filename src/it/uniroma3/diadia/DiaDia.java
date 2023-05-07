@@ -1,20 +1,25 @@
 package it.uniroma3.diadia;
-import it.uniroma3.diadia.command.*;
+
+
+
+import it.uniroma3.diadia.ambienti.Labirinto;
+import it.uniroma3.diadia.ambienti.LabirintoBuilder;
+import it.uniroma3.diadia.comandi.*;
 /**
  * Classe principale di diadia, un semplice gioco di ruolo ambientato al dia.
  * Per giocare crea un'istanza di questa classe e invoca il letodo gioca
  *
  * Questa e' la classe principale crea e istanzia tutte le altre
  *
- * @author  docente di POO 
- *         (da un'idea di Michael Kolling and David J. Barnes) 
+ * @author  docente di POO
+ *      
  *          
  * @version base
  */
 
 public class DiaDia {
 
-	static final private String MESSAGGIO_BENVENUTO = ""+
+	static final public String MESSAGGIO_BENVENUTO = ""+
 			"Ti trovi nell'Universita', ma oggi e' diversa dal solito...\n" +
 			"Meglio andare al piu' presto in biblioteca a studiare. Ma dov'e'?\n"+
 			"I locali sono popolati da strani personaggi, " +
@@ -23,63 +28,56 @@ public class DiaDia {
 			"puoi raccoglierli, usarli, posarli quando ti sembrano inutili\n" +
 			"o regalarli se pensi che possano ingraziarti qualcuno.\n\n"+
 			"Per conoscere le istruzioni usa il comando 'aiuto'.";
-	
-	
 
 	private Partita partita;
-	private IO command;
+	private IO io;
 
-	public DiaDia(IO command) {
-		this.command=command;
-		this.partita = new Partita(command);
-	
-		
+	public DiaDia(IO console, Labirinto labirinto) {
+		this.io = console;
+		this.partita = new Partita(labirinto);
 	}
 
 	public void gioca() {
 		String istruzione; 
+		//		Scanner scannerDiLinee;
+		io.mostraMessaggio(MESSAGGIO_BENVENUTO);
+		do {
+			istruzione = io.leggiRiga();
 
+		}while (!processaIstruzione(istruzione) );
 
-
-
-		if(command!=null)
-			command.mostraMessaggio(MESSAGGIO_BENVENUTO);
-
-		do		
-			istruzione = command.leggiRiga();
-		while (!processaIstruzione(istruzione));
 	}   
 
-
-	/**
+	/**System.in
 	 * Processa una istruzione 
 	 *
 	 * @return true se l'istruzione e' eseguita e il gioco continua, false altrimenti
 	 */
 	private boolean processaIstruzione(String istruzione) {
 		Comando comandoDaEseguire;
-		FabbricaDiComandi factory = new FabbricaDiComandiFisarmonica();
+		FabbricaDiComandiFisarmonica factory = new FabbricaDiComandiFisarmonica(this.io);
 		comandoDaEseguire = factory.costruisciComando(istruzione);
 		comandoDaEseguire.esegui(this.partita);
 		if (this.partita.vinta())
-
-			command.mostraMessaggio("Hai vinto!");
+			io.mostraMessaggio("Hai vinto!");
 		if (!this.partita.giocatoreIsVivo())
-
-			command.mostraMessaggio("Hai esaurito i CFU...");
-
-
+			io.mostraMessaggio("Hai esaurito i CFU...");
 		return this.partita.isFinita();
 	}
-	// implementazioni dei comandi dell'utente:
-
-
 	
+
 	public static void main(String[] argc) {
-		IO command =new IOConsole();
-		
-		DiaDia gioco = new DiaDia(command);
-		
+		IO console = new IOConsole();
+		Labirinto labirinto = new LabirintoBuilder()
+										.addStanzaIniziale("Atrio")
+										.addAttrezzo("martello", 3)
+										.addStanzaVincente("Biblioteca")
+										.addAdiacenza("Atrio", "Biblioteca", "nord")
+										.getLabirinto();
+		DiaDia gioco = new DiaDia(console, labirinto);
 		gioco.gioca();
+		
+		
 	}
+
 }

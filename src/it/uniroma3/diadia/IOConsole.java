@@ -17,3 +17,4 @@ public class IOConsole implements IO{
 		}
 	}
 }
+

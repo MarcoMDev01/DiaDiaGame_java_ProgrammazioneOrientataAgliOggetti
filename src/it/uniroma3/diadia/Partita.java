@@ -1,7 +1,7 @@
 package it.uniroma3.diadia;
-
 import it.uniroma3.diadia.ambienti.Labirinto;
 import it.uniroma3.diadia.ambienti.Stanza;
+
 import it.uniroma3.diadia.giocatore.Giocatore;
 
 /**
@@ -14,51 +14,42 @@ import it.uniroma3.diadia.giocatore.Giocatore;
 
 public class Partita {
 
-	static final private int CFU_INIZIALI = 20;
-	private boolean finita;
-	private Stanza stanzaCorrente;
+
+
 	private Labirinto labirinto;
 	private Giocatore giocatore;
-	private IO command;
+	private boolean finita;
 
-	public IO getCommand() {
-		return command;
-	}
-	public Partita(){
-		this.command= new IOConsole();
-		this.labirinto= new Labirinto();
-		this.stanzaCorrente= this.labirinto.getStanzaIniziale();
+	public Partita(Labirinto labirinto){
+		this.labirinto = labirinto;
+		giocatore = new Giocatore();
+		//labirinto.creaStanze();
 		this.finita = false;
-		this.setGiocatore(new Giocatore(CFU_INIZIALI));
-	}
-	public Partita(IO command){
-		this.command=command;
-		this.labirinto= new Labirinto();
-		this.stanzaCorrente= this.labirinto.getStanzaIniziale();
-		this.finita = false;
-		this.setGiocatore(new Giocatore(CFU_INIZIALI));
 	}
 
-	public Labirinto getLabirinto()
-	{
-		return this.labirinto;
+	public Labirinto getLabirinto(){
+		return labirinto;
 	}
 
-	public void setStanzaCorrente(Stanza stanzaCorrente) {
-		this.stanzaCorrente = stanzaCorrente;
+	public void setLabirinto(Labirinto labirinto) {
+		this.labirinto = labirinto;
 	}
 
-	public Stanza getStanzaCorrente() {
-		return this.stanzaCorrente;
+
+	public Giocatore getGiocatore() {
+		return giocatore;
 	}
 
+	public void setGiocatore(Giocatore giocatore) {
+		this.giocatore = giocatore;
+	}
 
 	/**
 	 * Restituisce vero se e solo se la partita e' stata vinta
 	 * @return vero se partita vinta
 	 */
 	public boolean vinta() {
-		return this.getStanzaCorrente()== this.labirinto.getStanzaVincente();
+		return labirinto.getStanzaIniziale()== labirinto.getStanzaVincente();
 	}
 
 	/**
@@ -77,19 +68,17 @@ public class Partita {
 		this.finita = true;
 	}
 
-
-
-	public Giocatore getGiocatore() {
-		return giocatore;
-	}
-
-	public void setGiocatore(Giocatore giocatore) {
-		this.giocatore = giocatore;
-	}
-
 	public boolean giocatoreIsVivo() {
-		return (giocatore.getCfu()!=0);
+		return this.giocatore.getCfu()>0;
+	}
+	
+	public void setStanzaCorrente(Stanza stanzaCorrente) {
+		this.getLabirinto().setStanzaIniziale(stanzaCorrente);
 	}
 
-	}	
+	public Stanza getStanzaCorrente() {
+		return this.getLabirinto().getStanzaIniziale();
+	}
+	
 
+}
